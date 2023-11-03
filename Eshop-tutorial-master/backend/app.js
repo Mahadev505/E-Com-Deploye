@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: 'https://e-com-deploye.vercel.app/', // Remove the trailing slash
+  origin: 'https://e-com-deploye-pixt.vercel.app', // Remove the trailing slash
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allow specific HTTP methods
   allowedHeaders: "Content-Type,Authorization", // Allow specific headers
