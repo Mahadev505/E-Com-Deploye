@@ -5,23 +5,18 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const allowedOrigin = 'https://e-com-deploye.vercel.app';
-
-const corsOptions = {
-  origin: allowedOrigin,
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: 'https://e-com-deploye.vercel.app/', // Remove the trailing slash
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allow specific HTTP methods
+  allowedHeaders: "Content-Type,Authorization", // Allow specific headers
+}));
 
 app.use(express.json());
 app.use(cookieParser());
-
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });
-
-// Serve static files (move this below the test route)
-app.use("/", express.static("uploads"));
 
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
