@@ -12,21 +12,15 @@ app.use(cors({
   allowedHeaders: "Content-Type,Authorization",
 }));
 
-// Your route handler for the login-user endpoint
-app.post("/api/v2/user/login-user", (req, res) => {
-  // Your login logic here
-  // Make sure to include the appropriate response with the 'Access-Control-Allow-Origin' header
-  res.header("Access-Control-Allow-Origin", "https://e-com-deploye-pixt.vercel.app");
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  // Rest of your login logic
-});
-app.use("/",express.static("uploads"));
 app.use(express.json());
 app.use(cookieParser());
+
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });
+
+// Serve static files (move this below the test route)
+app.use("/", express.static("uploads"));
 
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
