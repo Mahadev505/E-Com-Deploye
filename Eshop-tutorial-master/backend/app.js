@@ -5,12 +5,13 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-app.use(cors({
-  origin: 'https://e-com-deploye-pixt.vercel.app',
-  credentials: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  allowedHeaders: "Content-Type,Authorization",
-}));
+const allowedOrigin = 'https://e-com-deploye-pixt.vercel.app';
+
+const corsOptions = {
+  origin: allowedOrigin,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
