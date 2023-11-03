@@ -6,8 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: '*', // Allow requests from any origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow all HTTP methods
+  origin: 'https://e-com-deploye-pixt-jp9oo49c4-mahadevs-projects-7f30d1a2.vercel.app', // Match the supplied origin
   credentials: true
 }));
 
