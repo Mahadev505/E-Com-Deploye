@@ -7,6 +7,7 @@ const cors = require("cors");
 
 app.use(cors({
   origin: '*', // Allow requests from any origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow all HTTP methods
   credentials: true
 }));
 
@@ -16,7 +17,7 @@ app.use("/test", (req, res) => {
   res.send("Hello world!");
 });
 
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" });
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
 // config
 if (process.env.NODE_ENV !== "PRODUCTION") {
