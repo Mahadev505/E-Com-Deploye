@@ -39,7 +39,7 @@ router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `https://e-com-deploye-pixt-bau6m3hxu-mahadevs-projects-7f30d1a2.vercel.app/seller/activation/${activationToken}`;
+    const activationUrl = `https://e-com-deploye-pixt-git-main-mahadevs-projects-7f30d1a2.vercel.app/seller/activation/${activationToken}`;
 
     try {
       await sendMail({
