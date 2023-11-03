@@ -6,11 +6,21 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: 'https://e-com-deploye-pixt.vercel.app', // Remove the trailing slash
+  origin: 'https://e-com-deploye-pixt.vercel.app',
   credentials: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allow specific HTTP methods
-  allowedHeaders: "Content-Type,Authorization", // Allow specific headers
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
 }));
+
+// Your route handler for the login-user endpoint
+app.post("/api/v2/user/login-user", (req, res) => {
+  // Your login logic here
+  // Make sure to include the appropriate response with the 'Access-Control-Allow-Origin' header
+  res.header("Access-Control-Allow-Origin", "https://e-com-deploye-pixt.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  // Rest of your login logic
+});
 
 app.use(express.json());
 app.use(cookieParser());
