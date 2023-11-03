@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const allowedOrigin = 'https://e-com-deploye-pixt.vercel.app';
+const allowedOrigin = 'https://e-com-deploye.vercel.app';
 
 const corsOptions = {
   origin: allowedOrigin,
