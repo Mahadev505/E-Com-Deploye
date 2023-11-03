@@ -1,4 +1,4 @@
-export const server = "https://eshop-tutorial.vercel.app/api/v2";
+export const server = "https://e-com-deploye.vercel.app/api/v2";
 
-export const  backend_url ="https://eshop-tutorial.vercel.app"
+export const  backend_url ="https://e-com-deploye.vercel.app"
 
