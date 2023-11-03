@@ -21,7 +21,7 @@ app.post("/api/v2/user/login-user", (req, res) => {
 
   // Rest of your login logic
 });
-
+app.use("/",express.static("uploads"));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/test", (req, res) => {
