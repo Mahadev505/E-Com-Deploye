@@ -3,8 +3,12 @@ const ErrorHandler = require("./middleware/error");
 const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
-
+app.use(cors({
+  origin: 'https://e-com-deploye-pixt-bau6m3hxu-mahadevs-projects-7f30d1a2.vercel.app',
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieParser());
