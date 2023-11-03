@@ -35,7 +35,7 @@ router.post("/create-user", async (req, res, next) => {
 
     const activationToken = createActivationToken(user);
 
-    const activationUrl = `https://e-com-deploye-pixt-bau6m3hxu-mahadevs-projects-7f30d1a2.vercel.app/activation/${activationToken}`;
+    const activationUrl = `https://e-com-deploye-pixt-git-main-mahadevs-projects-7f30d1a2.vercel.app/activation/${activationToken}`;
 
     try {
       await sendMail({
