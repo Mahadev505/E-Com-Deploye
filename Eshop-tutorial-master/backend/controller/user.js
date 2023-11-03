@@ -90,6 +90,11 @@ router.post(
         avatar,
         password,
       });
+      await sendMail({
+        email: user.email,
+        subject: "Activate your account",
+        message:"Welcome to our e-commerce website! Happy shopping! 😊",
+      });
 
       sendToken(user, 201, res);
     } catch (error) {
