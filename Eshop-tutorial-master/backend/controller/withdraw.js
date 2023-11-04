@@ -20,14 +20,20 @@ router.post(
         amount,
       };
 
+      const seller = req.seller;
+
+      if (seller.availableBalance < amount) {
+        return res.status(400).json({
+          success: false,
+          message: "Insufficient balance for withdrawal.",
+        });
+      }
+
       try {
         await sendMail({
           email: req.seller.email,
           subject: "Withdraw Request",
-          message: `Hello ${req.seller.name}, Your withdraw request of ${amount}$ is processing. It will take 3days to 7days to processing! `,
-        });
-        res.status(201).json({
-          success: true,
+          message: `Hello ${req.seller.name}, Your withdraw request of ${amount}$ is processing. It will take 3 days to 7 days to process!`,
         });
       } catch (error) {
         return next(new ErrorHandler(error.message, 500));
@@ -36,10 +42,6 @@ router.post(
       const withdraw = await Withdraw.create(data);
 
       const shop = await Shop.findById(req.seller._id);
-
-      shop.availableBalance = shop.availableBalance - amount;
-
-      await shop.save();
 
       res.status(201).json({
         success: true,
@@ -51,8 +53,7 @@ router.post(
   })
 );
 
-// get all withdraws --- admnin
-
+// get all withdraws --- admin
 router.get(
   "/get-all-withdraw-request",
   isAuthenticated,
@@ -89,27 +90,30 @@ router.put(
         { new: true }
       );
 
-      const seller = await Shop.findById(sellerId);
+      if (withdraw.status === "succeed") {
+        const seller = await Shop.findById(sellerId);
 
-      const transection = {
-        _id: withdraw._id,
-        amount: withdraw.amount,
-        updatedAt: withdraw.updatedAt,
-        status: withdraw.status,
-      };
+        const transection = {
+          _id: withdraw._id,
+          amount: withdraw.amount,
+          updatedAt: withdraw.updatedAt,
+          status: withdraw.status,
+        };
 
-      seller.transections = [...seller.transections, transection];
+        seller.transections = [...seller.transections, transection];
+        seller.availableBalance -= withdraw.amount; // Deduct the amount
 
-      await seller.save();
+        await seller.save();
 
-      try {
-        await sendMail({
-          email: seller.email,
-          subject: "Payment confirmation",
-          message: `Hello ${seller.name}, Your withdraw request of ${withdraw.amount}$ is on the way. Delivery time depends on your bank's rules it usually takes 3days to 7days.`,
-        });
-      } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        try {
+          await sendMail({
+            email: seller.email,
+            subject: "Payment confirmation",
+            message: `Hello ${seller.name}, Your withdraw request of ${withdraw.amount}$ is on the way. Delivery time depends on your bank's rules; it usually takes 3 days to 7 days.`,
+          });
+        } catch (error) {
+          return next(new ErrorHandler(error.message, 500));
+        }
       }
       res.status(201).json({
         success: true,
@@ -122,3 +126,4 @@ router.put(
 );
 
 module.exports = router;
+
