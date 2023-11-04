@@ -5,6 +5,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
+const sendMail = require("../utils/sendMail");
 const Product = require("../model/product");
 
 // create new order
@@ -90,6 +91,7 @@ router.get(
 );
 
 // update order status for seller
+// update order status for seller
 router.put(
   "/update-order-status/:id",
   isSeller,
@@ -100,30 +102,36 @@ router.put(
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
       }
-      if (req.body.status === "Transferred to delivery partner") {
-        order.cart.forEach(async (o) => {
-          await updateOrder(o._id, o.qty);
-        });
-      }
 
+      const previousStatus = order.status;
       order.status = req.body.status;
+
+      // Check if the status is changed to "Transferred to delivery partner"
+      if (req.body.status === "Transferred to delivery partner" && previousStatus !== "Transferred to delivery partner") {
+        for (const item of order.cart) {
+          await updateProductQuantity(item.product, item.qty);
+        }
+      }
 
       if (req.body.status === "Delivered") {
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Succeeded";
-        const serviceCharge = order.totalPrice * .10;
+        const serviceCharge = order.totalPrice * 0.10;
         await updateSellerInfo(order.totalPrice - serviceCharge);
       }
 
       await order.save({ validateBeforeSave: false });
+
+      // Send an email to the user using your email utility
+      await sendEmailToUser(order.user.email, `Your order with ID ${order._id} is now ${req.body.status}`);
 
       res.status(200).json({
         success: true,
         order,
       });
 
-      async function updateOrder(id, qty) {
-        const product = await Product.findById(id);
+      async function updateProductQuantity(productId, qty) {
+        const product = await Product.findById(productId);
 
         product.stock -= qty;
         product.sold_out += qty;
@@ -133,42 +141,27 @@ router.put(
 
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
-        
+
         seller.availableBalance = amount;
 
         await seller.save();
       }
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  })
-);
 
-// give a refund ----- user
-router.put(
-  "/order-refund/:id",
-  catchAsyncErrors(async (req, res, next) => {
-    try {
-      const order = await Order.findById(req.params.id);
-
-      if (!order) {
-        return next(new ErrorHandler("Order not found with this id", 400));
+      async function sendEmailToUser(email, message) {
+        // Use your existing email utility function to send the email
+        // Example:
+        await yourEmailUtility.sendEmail({
+          to: email,
+          subject: "Order Status Update",
+          text: message,
+        });
       }
-
-      order.status = req.body.status;
-
-      await order.save({ validateBeforeSave: false });
-
-      res.status(200).json({
-        success: true,
-        order,
-        message: "Order Refund Request successfully!",
-      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
+
 
 // accept the refund ---- seller
 router.put(
