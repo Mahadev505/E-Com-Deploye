@@ -33,7 +33,7 @@ router.post(
         await sendMail({
           email: req.seller.email,
           subject: "Withdraw Request",
-          message: `Hello ${req.seller.name}, Your withdraw request of ${amount}$ is processing. It will take 3 days to 7 days to process!`,
+          message: `Hello ${req.seller.name}, Your withdraw request of ${amount}₹ is processing. It will take 3 days to 7 days to process!`,
         });
       } catch (error) {
         return next(new ErrorHandler(error.message, 500));
